@@ -42,6 +42,7 @@ class StockClient:
         try:
             response = requests.get(url, headers=self.headers, timeout=10)
             response.raise_for_status()
+            print(f"Status Code: {response.status_code}")
             data = response.json()
             chart_result = data.get('chart', {}).get('result')
 
@@ -53,10 +54,13 @@ class StockClient:
 
         except Timeout:
             print(f"Error in {symbol}: Request timed out.")
+            return None
         except HTTPError as error:
             print(f"Error in {symbol}: HTTP error occurred: {error}")
+            return None
         except RequestException as error:
             print(f"Error in {symbol}: Network error occurred: {error}")
+            return None
 
 
 symbolsList = read_watchlist()
@@ -132,4 +136,5 @@ if change_col:
     )
 
 wb.save(filename)
+
 print(f"\nExcel report created: {filename}")
